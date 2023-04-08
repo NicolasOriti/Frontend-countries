@@ -1,0 +1,31 @@
+.landing-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.landing-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -5;
+}
+
+.landing-button {
+  position: absolute;
+  z-index: 5;
+  top: 40%;
+  width: 200px;
+  height: 100px;
+  background-color: #3b3b3cd3;
+  color: white;
+  font-size: 24px;
+  border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.landing-button:hover {
+  border: 2px solid white;
+}

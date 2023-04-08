@@ -1,0 +1,19 @@
+.countries__container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 80%;
+  margin: auto;
+}
+
+.country-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #000;
+}
