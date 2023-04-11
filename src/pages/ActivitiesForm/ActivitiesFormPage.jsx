@@ -1,12 +1,22 @@
+import './activitiesFormPage.css';
+
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Navbar } from './../../components/Navbar';
+import { addActivity } from '../../store/slices/activities/thunks';
+// import { useSelector } from 'react-redux';
 import { useState } from 'react';
 
 export const ActivitiesFormPage = () => {
   const [name, setName] = useState('');
-  const [difficulty, setDifficulty] = useState('');
+  const [difficulty, setDifficulty] = useState('1');
   const [duration, setDuration] = useState(0);
-  const [season, setSeason] = useState('');
+  const [season, setSeason] = useState('Primavera');
   const [idCountries, setIdCountries] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const allCountries = useSelector((state) => state.countries.countries);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -25,9 +35,15 @@ export const ActivitiesFormPage = () => {
   };
 
   const handleCountriesChange = (event) => {
+    console.log(event.target.value);
     const selectedCountries = idCountries;
+    const indexSelected = selectedCountries.findIndex((country) => country === event.target.value);
 
-    selectedCountries.push(event.target.value);
+    if (indexSelected > -1) {
+      selectedCountries.splice(indexSelected, 1);
+    } else {
+      selectedCountries.push(event.target.value);
+    }
 
     setIdCountries(selectedCountries);
     console.log(idCountries);
@@ -36,7 +52,7 @@ export const ActivitiesFormPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log({ name, difficulty, duration, season, idCountries });
+    dispatch(addActivity({ name, difficulty, duration, season, idCountries }));
   };
 
   return (
@@ -84,11 +100,17 @@ export const ActivitiesFormPage = () => {
         <br />
 
         <label>Paises:</label>
-        <select multiple={true} value={idCountries} onChange={handleCountriesChange}>
-          <option value='ARG'>Argentina</option>
-          <option value='BRA'>Brasil</option>
-          <option value='CHL'>Chile</option>
-          <option value='URY'>Uruguay</option>
+        <select
+          className='countries-select'
+          multiple={true}
+          value={idCountries}
+          onChange={handleCountriesChange}
+        >
+          {allCountries.map((country) => (
+            <option key={country.id} value={country.id}>
+              {country.name}
+            </option>
+          ))}
         </select>
 
         <br />

@@ -1,16 +1,23 @@
 import './homePage.css';
 
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Link } from 'react-router-dom';
 import { Navbar } from './../../components/Navbar';
+import { getActivities } from './../../store/slices/activities/thunks';
 
 export const HomePage = () => {
   const [countries, setCountries] = useState([]);
-  const [oldCountries, setOldCountries] = useState([]);
   const [activities, setActivities] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState('');
+
+  const allCountries = useSelector((state) => state.countries.countries);
+  const allActivities = useSelector((state) => state.activities.activities);
+
+  // console.log('holaPaises', allCountries);
+  const dispatch = useDispatch();
 
   const prevPage = () => {
     if (currentPage > 0) {
@@ -36,7 +43,6 @@ export const HomePage = () => {
 
     const filtered = countries.filter((country) => {
       return country.name.toLowerCase().includes(search.toLowerCase());
-      // brasil.inludes('bra')
     });
 
     return filtered.slice(currentPage, currentPage + 10);
@@ -100,7 +106,7 @@ export const HomePage = () => {
         break;
 
       default:
-        setCountries(oldCountries);
+        setCountries(allCountries);
         break;
     }
   };
@@ -111,37 +117,37 @@ export const HomePage = () => {
     switch (value) {
       case 'Americas':
         setCurrentPage(0);
-        filtered = oldCountries.filter((country) => country.continent === 'Americas');
+        filtered = allCountries.filter((country) => country.continent === 'Americas');
         setCountries(filtered);
         break;
       case 'Europe':
         setCurrentPage(0);
-        filtered = oldCountries.filter((country) => country.continent === 'Europe');
+        filtered = allCountries.filter((country) => country.continent === 'Europe');
         setCountries(filtered);
         break;
       case 'Asia':
         setCurrentPage(0);
-        filtered = oldCountries.filter((country) => country.continent === 'Asia');
+        filtered = allCountries.filter((country) => country.continent === 'Asia');
         setCountries(filtered);
         break;
       case 'Africa':
         setCurrentPage(0);
-        filtered = oldCountries.filter((country) => country.continent === 'Africa');
+        filtered = allCountries.filter((country) => country.continent === 'Africa');
         setCountries(filtered);
         break;
       case 'Oceania':
         setCurrentPage(0);
-        filtered = oldCountries.filter((country) => country.continent === 'Oceania');
+        filtered = allCountries.filter((country) => country.continent === 'Oceania');
         setCountries(filtered);
         break;
       case 'Antarctic':
         setCurrentPage(0);
-        filtered = oldCountries.filter((country) => country.continent === 'Antarctic');
+        filtered = allCountries.filter((country) => country.continent === 'Antarctic');
         setCountries(filtered);
         break;
 
       default:
-        setCountries(oldCountries);
+        setCountries(allCountries);
         break;
     }
   };
@@ -149,11 +155,11 @@ export const HomePage = () => {
   const handleFilterActivity = (event) => {
     const value = event.target.value;
     if (value === 'none') {
-      return setCountries(oldCountries);
+      return setCountries(allCountries);
     }
 
     const activity = activities.find((activity) => activity.id === Number(value));
-    const filtered = oldCountries.filter((country) => {
+    const filtered = allCountries.filter((country) => {
       return activity.countries.find((countryActivity) => countryActivity.id === country.id);
     });
     setCountries(filtered);
@@ -161,21 +167,13 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:3001/countries')
-      .then((response) => response.json())
-      .then((data) => {
-        setCountries(data);
-        setOldCountries(data);
-      });
-  }, []);
+    setCountries(allCountries);
+  }, [allCountries]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/activities')
-      .then((response) => response.json())
-      .then((data) => {
-        setActivities(data);
-      });
-  }, []);
+    dispatch(getActivities());
+    setActivities(allActivities);
+  }, [allActivities, dispatch]);
 
   return (
     <div>
